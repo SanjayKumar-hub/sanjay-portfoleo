@@ -212,8 +212,8 @@ a:focus-visible .roll__b {
   border-top: 1px solid var(--line);
   overflow: hidden;
   padding: 0.85rem 0;
-  background: linear-gradient(90deg, #2d1a6e 0%, #1a3a5c 50%, #0d3d33 100%);
-  color: var(--white);
+  background: var(--cyprus);
+  color: var(--sand);
 }
 
 .marquee__track {

@@ -1,11 +1,32 @@
 /* ───────── Tokens ───────── */
 :root {
-  --paper: #f5f0e4;
-  --white: #fff;
-  --ink: #000;
-  --mute: #6b6b6b;
-  --line: rgba(0, 0, 0, 0.2);
-  --line-inv: rgba(255, 255, 255, 0.25);
+  /* ── Brand palette ── */
+  --cyprus: #004741;
+  /* dark teal-green  */
+  --sand: #F0EDE4;
+  /* warm off-white   */
+
+  /* ── Semantic aliases ── */
+  --paper: var(--sand);
+  /* page background   */
+  --ink: var(--cyprus);
+  /* primary text/ui   */
+  --white: #ffffff;
+  --mute: rgba(0, 71, 65, 0.52);
+  /* de-emphasised text */
+  --line: rgba(0, 71, 65, 0.18);
+  /* hairline dividers  */
+  --line-inv: rgba(240, 237, 228, 0.22);
+  /* dividers on dark  */
+
+  /* ── Accent ── warm amber-gold that pairs with both cyprus & sand */
+  --accent: #BF8C30;
+  --accent-dim: #D4AA58;
+  --accent-glow: rgba(191, 140, 48, 0.18);
+  --teal: #007A6E;
+  /* lighter cyprus teal for highlights */
+  --amber: #C8963C;
+  /* retained alias */
 
   --f-display: 'Anton', 'Impact', 'Arial Narrow Bold', sans-serif;
   --f-body: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
@@ -15,17 +36,6 @@
   --nav-h: 64px;
   --ease: cubic-bezier(0.65, 0, 0.15, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-
-  /* ── Accent palette ── */
-  --accent: #6c47ff;
-  /* vivid violet */
-  --accent-dim: #9b7dff;
-  /* lighter violet for dark surfaces */
-  --accent-glow: rgba(108, 71, 255, 0.18);
-  --teal: #00c2b7;
-  /* teal highlight */
-  --amber: #f5a623;
-  /* warm amber */
 }
 
 /* ───────── Reset ───────── */
@@ -119,7 +129,7 @@ section[id] {
 
 /* ───────── Layout ───────── */
 .section {
-  padding: clamp(5rem, 11vw, 10rem) var(--pad) clamp(3rem, 6vw, 6rem);
+  padding: clamp(2.5rem, 5vw, 5rem) var(--pad) clamp(1.5rem, 3vw, 3rem);
 }
 
 /* ───────── Reveal system ───────── */
@@ -154,55 +164,177 @@ section[id] {
   transform: none;
 }
 
-/* ───────── Loader ───────── */
-.loader {
+/* ═══════════════════════════════════════════
+   CINEMATIC LOADER
+═══════════════════════════════════════════ */
+.ldr {
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: var(--ink);
-  color: var(--white);
+  overflow: hidden;
+  pointer-events: all;
+}
+
+/* ── Grid overlay ── */
+.ldr__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── 7 sliding panels ── */
+.ldr__panels {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  z-index: 2;
+}
+
+.ldr__panel {
+  flex: 1;
+  background: var(--cyprus);
+  transform-origin: top;
+  transition:
+    transform 0.75s var(--ease) calc(var(--pi) * 60ms);
+}
+
+/* odd panels slide up, even slide down */
+.ldr--split .ldr__panel:nth-child(odd) {
+  transform: translateY(-103%);
+}
+
+.ldr--split .ldr__panel:nth-child(even) {
+  transform: translateY(103%);
+}
+
+/* ── Content layer ── */
+.ldr__body {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   padding: var(--pad);
-  gap: 1.25rem;
-  transition: transform 0.85s var(--ease);
+  gap: 1rem;
+  color: var(--white);
+  animation: ldr-body-in 0.6s var(--ease-out) both;
 }
 
-.loader--out {
-  transform: translateY(-100%);
+.ldr--split .ldr__body {
+  opacity: 0;
+  transition: opacity 0.2s;
 }
 
-.loader__name {
-  font-size: clamp(2.5rem, 9vw, 7rem);
-  animation: loader-in 0.9s var(--ease-out) both;
-}
-
-.loader__bar {
-  height: 1px;
-  background: var(--line-inv);
-  overflow: hidden;
-}
-
-.loader__bar span {
-  display: block;
-  height: 100%;
-  background: var(--white);
-  transform-origin: left;
-  animation: loader-bar 1.1s var(--ease) both;
-}
-
-@keyframes loader-in {
+@keyframes ldr-body-in {
   from {
     opacity: 0;
-    transform: translateY(40px);
+    transform: translateY(20px);
   }
 }
 
-@keyframes loader-bar {
-  from {
-    transform: scaleX(0);
+/* ── Eyebrow row ── */
+.ldr__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 0.25rem;
+}
+
+.ldr__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  animation: ldr-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes ldr-pulse {
+
+  0%,
+  100% {
+    opacity: 1;
   }
+
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.ldr__year {
+  margin-left: auto;
+}
+
+/* ── Big name ── */
+.ldr__name {
+  font-size: clamp(2.8rem, 10vw, 9rem);
+  line-height: 0.9;
+  color: var(--white);
+  font-variant-numeric: tabular-nums;
+  min-height: 1em;
+}
+
+/* ── Tag line ── */
+.ldr__tag {
+  font-family: var(--f-mono);
+  font-size: clamp(0.7rem, 1.1vw, 0.9rem);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.4);
+  min-height: 1.2em;
+}
+
+/* ── Footer: bar + counter ── */
+.ldr__foot {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.ldr__bar-wrap {
+  flex: 1;
+}
+
+.ldr__bar-track {
+  height: 2px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+  border-radius: 99px;
+}
+
+.ldr__bar-fill {
+  height: 100%;
+  width: var(--pct, 0%);
+  background: linear-gradient(90deg, var(--accent), var(--teal));
+  border-radius: 99px;
+  transition: width 0.05s linear;
+}
+
+.ldr__count {
+  font-family: var(--f-display);
+  font-size: clamp(2rem, 5vw, 4rem);
+  color: var(--white);
+  line-height: 1;
+  min-width: 5ch;
+  text-align: right;
+}
+
+.ldr__count span {
+  font-size: 0.5em;
+  opacity: 0.5;
+  margin-left: 0.1em;
 }
 
 /* ───────── Cursor ring ───────── */
